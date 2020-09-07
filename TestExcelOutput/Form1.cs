@@ -84,7 +84,7 @@ namespace TestExcelOutput
             excelSave.SaveAsPdf(outputExcelFileName, pdfFileName);
 
             //PDFに変換後、TempのExcelファイルを削除する
-            File.Delete(outputExcelFileName);
+            //File.Delete(outputExcelFileName);
 
             MessageBox.Show("Output have been finished!!!");
         }
