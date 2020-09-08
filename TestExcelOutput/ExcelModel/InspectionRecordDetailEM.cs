@@ -9,16 +9,15 @@ namespace ExcelView
 {
     class InspectionRecordDetailEM
     {
-        private readonly int StartRow = 6;
+        public int RowIndex { get; set; }
 
+        [ExcelColPosition(Col = 1)]
+        public string GoodName { get; set; }
 
-        [ExcelColPosition(Col = 4)]
-        public string Quantity { get; set; }
+        [ExcelColPosition(Col = 2)]
+        public string ReceptionTime { get; set; }
 
-        [ExcelColPosition(Col = 5)]
-        public string Weight { get; set; }
-
-        [ExcelColPosition(Col = 6)]
-        public string UnitPrice { get; set; }
+        [ExcelColPosition(Col = 3)]
+        public string PackingRemark { get; set; }
     }
 }

@@ -42,12 +42,16 @@ namespace TestExcelOutput
             try
             {
                 excelSingleton.OpenExcel(outputExcelFileName);
-                //新規の行(3行)を指定列(15:15)に挿入する
-                excelSingleton.InsertRowOfSheet(sheetName, 7, 3);
+                
                 //新規の列(3列)を指定列(D:D)に挿入する
                 excelSingleton.InsertColOfSheet(sheetName, "D", 3);
 
-                SetHeadCell(excelSingleton, sheetName);
+                // EXCELの固定セルの内容を設定する。
+                SetHeadCellData2Excel(excelSingleton, sheetName);
+
+                // EXCELの明細内容を設定する。
+                SetDetailData2Excel(excelSingleton, sheetName);
+                
             }
             catch (Exception ex)
             {
@@ -81,13 +85,13 @@ namespace TestExcelOutput
         }
 
         /// <summary>
-		/// EXCELのセルの内容を設定、取得します。
+		/// EXCELの固定セルの内容を設定する。
 		/// </summary>
-		/// <param name="year">年</param>
-        /// <param name="month">月</param>
-		/// <returns>Dictionary<key日, value曜日></returns>
+		/// <param name="excelSingleton"></param>
+        /// <param name="sheetName"></param>
+		/// <returns></returns>
 		/// <remarks></remarks>
-        private void SetHeadCell(ExcelFileSingleton excelSingleton, string sheetName)
+        private void SetHeadCellData2Excel(ExcelFileSingleton excelSingleton, string sheetName)
         {
             //今後、DBからデータを取得して、ExcelViewのobjectに格納する
             InspectionRecordEM insRecordEV = new InspectionRecordEM();
@@ -104,11 +108,11 @@ namespace TestExcelOutput
             foreach(PropertyInfo pf in eVtype.GetProperties())
             {
                 string cellValue = (string)pf.GetValue(insRecordEV);
-                var atb = (ExcelCellPositionAttribute)pf.GetCustomAttributes(typeof(ExcelCellPositionAttribute), false).FirstOrDefault();
+                var attribute = (ExcelCellPositionAttribute)pf.GetCustomAttributes(typeof(ExcelCellPositionAttribute), false).FirstOrDefault();
 
                 ExcelCellObject cell = new ExcelCellObject();
-                cell.RowIndex = atb.Row;
-                cell.ColIndex = atb.Col;
+                cell.RowIndex = attribute.Row;
+                cell.ColIndex = attribute.Col;
                 cell.Value = cellValue;
 
                 headRow.Cells.Add(cell);
@@ -116,6 +120,65 @@ namespace TestExcelOutput
 
             rows.Add(headRow);
             excelSingleton.WriteRowsToSheet(sheetName, rows);
+        }
+
+        /// <summary>
+		/// EXCELの固定セルの内容を設定する。
+		/// </summary>
+		/// <param name="excelSingleton"></param>
+        /// <param name="sheetName"></param>
+		/// <returns></returns>
+		/// <remarks></remarks>
+        private void SetDetailData2Excel(ExcelFileSingleton excelSingleton, string sheetName)
+        {
+            //今後、DBからデータを取得して、ExcelViewのobjectに格納する
+            int startRowIndex = 6;
+            List<InspectionRecordDetailEM> details = new List<InspectionRecordDetailEM>();
+            for(int i=0; i<30; i++)
+            {
+                InspectionRecordDetailEM detail = new InspectionRecordDetailEM();
+                detail.GoodName = "品名_" + (i + 1).ToString();
+                detail.ReceptionTime = DateTime.Now.ToString("h:mm:ss tt");
+                detail.PackingRemark = "外箱に異常はない_" + (i + 1).ToString();
+                detail.RowIndex = startRowIndex + i;
+
+                details.Add(detail);
+            }
+            //今後、DBからデータを取得して、ExcelViewのobjectに格納する
+
+            //新規の行を指定行(7)に挿入する
+            excelSingleton.InsertRowOfSheet(sheetName, 7, 30);
+
+            //セルの値を設定する
+            List<ExcelRowObject> rows = new List<ExcelRowObject>();
+            
+
+            var eVtype = typeof(InspectionRecordDetailEM);
+
+            foreach(InspectionRecordDetailEM detail in details)
+            {
+                ExcelRowObject row = new ExcelRowObject();
+                foreach (PropertyInfo pf in eVtype.GetProperties())
+                {   
+                    var attribute = (ExcelColPositionAttribute)pf.GetCustomAttributes(typeof(ExcelColPositionAttribute), false).FirstOrDefault();
+                    if (attribute is null)
+                    {
+                        continue;
+                    }
+                    string cellValue = (string)pf.GetValue(detail);
+
+                    ExcelCellObject cell = new ExcelCellObject();
+                    cell.RowIndex = detail.RowIndex;
+                    cell.ColIndex = attribute.Col;
+                    cell.Value = cellValue;
+
+                    row.Cells.Add(cell);
+                }
+                rows.Add(row);
+            }
+
+            excelSingleton.WriteRowsToSheet(sheetName, rows);
+
         }
 
 
