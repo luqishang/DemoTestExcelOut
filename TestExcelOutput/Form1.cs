@@ -47,7 +47,7 @@ namespace TestExcelOutput
                 //新規の列(3列)を指定列(D:D)に挿入する
                 excelSingleton.InsertColOfSheet(sheetName, "D", 3);
 
-                TestSetCellValue(excelSingleton, sheetName);
+                SetHeadCell(excelSingleton, sheetName);
             }
             catch (Exception ex)
             {
@@ -80,48 +80,40 @@ namespace TestExcelOutput
             return path;
         }
 
-        private void TestSetCellValue(ExcelFileSingleton excelSingleton, string sheetName)
+        /// <summary>
+		/// EXCELのセルの内容を設定、取得します。
+		/// </summary>
+		/// <param name="year">年</param>
+        /// <param name="month">月</param>
+		/// <returns>Dictionary<key日, value曜日></returns>
+		/// <remarks></remarks>
+        private void SetHeadCell(ExcelFileSingleton excelSingleton, string sheetName)
         {
             //今後、DBからデータを取得して、ExcelViewのobjectに格納する
-            InspectionRecordEV insRecordEV = new InspectionRecordEV();
+            InspectionRecordEM insRecordEV = new InspectionRecordEM();
             insRecordEV.Quantity = "数量";
             insRecordEV.Weight = "重量";
             insRecordEV.UnitPrice = "単価";
             //今後、DBからデータを取得して、ExcelViewのobjectに格納する
 
-            var eVtype = typeof(InspectionRecordEV);
-            foreach(PropertyInfo pf in eVtype.GetProperties())
-            {
-                string cellValue = (string)pf.GetValue(insRecordEV);
-                var attribute = pf.GetCustomAttributes(typeof(ExcelCellPositionAttribute), false).FirstOrDefault();
-
-                int i = 0;
-
-            }
-
-
-
             //セルの値を設定する
             List<ExcelRowObject> rows = new List<ExcelRowObject>();
             ExcelRowObject headRow = new ExcelRowObject();
-            ExcelCellObject cellD5 = new ExcelCellObject();
-            cellD5.RowIndex = 5;
-            cellD5.ColIndex = 4;
-            cellD5.Value = "数量";
 
-            ExcelCellObject cellE5 = new ExcelCellObject();
-            cellE5.RowIndex = 5;
-            cellE5.ColIndex = 5;
-            cellE5.Value = "重量";
+            var eVtype = typeof(InspectionRecordEM);
+            foreach(PropertyInfo pf in eVtype.GetProperties())
+            {
+                string cellValue = (string)pf.GetValue(insRecordEV);
+                var atb = (ExcelCellPositionAttribute)pf.GetCustomAttributes(typeof(ExcelCellPositionAttribute), false).FirstOrDefault();
 
-            ExcelCellObject cellF5 = new ExcelCellObject();
-            cellF5.RowIndex = 5;
-            cellF5.ColIndex = 6;
-            cellF5.Value = "単価";
+                ExcelCellObject cell = new ExcelCellObject();
+                cell.RowIndex = atb.Row;
+                cell.ColIndex = atb.Col;
+                cell.Value = cellValue;
 
-            headRow.Cells.Add(cellD5);
-            headRow.Cells.Add(cellE5);
-            headRow.Cells.Add(cellF5);
+                headRow.Cells.Add(cell);
+            }
+
             rows.Add(headRow);
             excelSingleton.WriteRowsToSheet(sheetName, rows);
         }

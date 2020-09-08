@@ -54,7 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExcelView\InspectionRecordEV.cs" />
+    <Compile Include="ExcelModel\InspectionRecordDetailEM.cs" />
+    <Compile Include="ExcelModel\InspectionRecordEM.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

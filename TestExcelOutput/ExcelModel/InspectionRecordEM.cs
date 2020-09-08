@@ -7,7 +7,7 @@ using OfficePositionAttributes;
 
 namespace ExcelView
 {
-    class InspectionRecordEV
+    class InspectionRecordEM
     {
         [ExcelCellPosition(Row = 5, Col = 4)]
         public string Quantity { get; set; }
