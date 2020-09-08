@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using PA.Office.ExcelObjects;
+using ExcelView;
+using System.Reflection;
+using OfficePositionAttributes;
 
 namespace TestExcelOutput
 {
@@ -20,7 +23,7 @@ namespace TestExcelOutput
         }
 
         private void btnTestExcelOutput_Click(object sender, EventArgs e)
-        {         
+        {
             string templeteFileName = "..\\..\\excelTemplate\\検収記録_template_1.xlsx";
             //string outputExcelFileName = "..\\..\\excelTemplate\\PDFTemp\\検収記録.xlsx";
             //string outputExcelFileName = this.saveExcelFileDialog.FileName;
@@ -40,34 +43,11 @@ namespace TestExcelOutput
             {
                 excelSingleton.OpenExcel(outputExcelFileName);
                 //新規の行(3行)を指定列(15:15)に挿入する
-                excelSingleton.InsertRowOfSheet(sheetName, 15, 3);
+                excelSingleton.InsertRowOfSheet(sheetName, 7, 3);
                 //新規の列(3列)を指定列(D:D)に挿入する
                 excelSingleton.InsertColOfSheet(sheetName, "D", 3);
 
-                //セルの値を設定する
-                List<ExcelRowObject> rows = new List<ExcelRowObject>();
-                ExcelRowObject headRow = new ExcelRowObject();
-                ExcelCellObject cellD5 = new ExcelCellObject();
-                cellD5.RowIndex = 5;
-                cellD5.ColIndex = 4;
-                cellD5.Value = "数量";
-
-                ExcelCellObject cellE5 = new ExcelCellObject();
-                cellE5.RowIndex = 5;
-                cellE5.ColIndex = 5;
-                cellE5.Value = "重量";
-
-                ExcelCellObject cellF5 = new ExcelCellObject();
-                cellF5.RowIndex = 5;
-                cellF5.ColIndex = 6;
-                cellF5.Value = "単価";
-
-                headRow.Cells.Add(cellD5);
-                headRow.Cells.Add(cellE5);
-                headRow.Cells.Add(cellF5);
-                rows.Add(headRow);
-                excelSingleton.WriteRowsToSheet(sheetName, rows);
-
+                TestSetCellValue(excelSingleton, sheetName);
             }
             catch (Exception ex)
             {
@@ -99,6 +79,53 @@ namespace TestExcelOutput
 
             return path;
         }
+
+        private void TestSetCellValue(ExcelFileSingleton excelSingleton, string sheetName)
+        {
+            //今後、DBからデータを取得して、ExcelViewのobjectに格納する
+            InspectionRecordEV insRecordEV = new InspectionRecordEV();
+            insRecordEV.Quantity = "数量";
+            insRecordEV.Weight = "重量";
+            insRecordEV.UnitPrice = "単価";
+            //今後、DBからデータを取得して、ExcelViewのobjectに格納する
+
+            var eVtype = typeof(InspectionRecordEV);
+            foreach(PropertyInfo pf in eVtype.GetProperties())
+            {
+                string cellValue = (string)pf.GetValue(insRecordEV);
+                var attribute = pf.GetCustomAttributes(typeof(ExcelCellPositionAttribute), false).FirstOrDefault();
+
+                int i = 0;
+
+            }
+
+
+
+            //セルの値を設定する
+            List<ExcelRowObject> rows = new List<ExcelRowObject>();
+            ExcelRowObject headRow = new ExcelRowObject();
+            ExcelCellObject cellD5 = new ExcelCellObject();
+            cellD5.RowIndex = 5;
+            cellD5.ColIndex = 4;
+            cellD5.Value = "数量";
+
+            ExcelCellObject cellE5 = new ExcelCellObject();
+            cellE5.RowIndex = 5;
+            cellE5.ColIndex = 5;
+            cellE5.Value = "重量";
+
+            ExcelCellObject cellF5 = new ExcelCellObject();
+            cellF5.RowIndex = 5;
+            cellF5.ColIndex = 6;
+            cellF5.Value = "単価";
+
+            headRow.Cells.Add(cellD5);
+            headRow.Cells.Add(cellE5);
+            headRow.Cells.Add(cellF5);
+            rows.Add(headRow);
+            excelSingleton.WriteRowsToSheet(sheetName, rows);
+        }
+
 
         /// <summary>
 		/// EXCELのセルの内容を設定、取得します。
