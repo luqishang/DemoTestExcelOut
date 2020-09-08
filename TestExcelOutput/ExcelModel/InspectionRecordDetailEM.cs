@@ -11,6 +11,7 @@ namespace ExcelView
     {
         private readonly int StartRow = 6;
 
+
         [ExcelColPosition(Col = 4)]
         public string Quantity { get; set; }
 
