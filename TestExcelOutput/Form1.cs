@@ -107,7 +107,7 @@ namespace TestExcelOutput
         /// <param name="month">月</param>
 		/// <returns>Dictionary<key日, value曜日></returns>
 		/// <remarks></remarks>
-        public static Dictionary<int, string> GetDayAndWeek(DateTime date)
+        public static Dictionary<int, string> GetDayAndWeekName(DateTime date)
         {
             //日付、曜日を格納するための辞書
             Dictionary<int, string> day = new Dictionary<int, string>();
