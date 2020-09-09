@@ -76,6 +76,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="excelTemplate\一般衛生管理_template.xlsx" />
     <None Include="excelTemplate\検収記録_template_1.xlsx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -91,6 +92,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ExcelCommon\" />
     <Folder Include="excelTemplate\PDFTemp\" />
   </ItemGroup>
   <ItemGroup>
