@@ -189,17 +189,22 @@ namespace TestExcelOutput
         /// <param name="month">月</param>
 		/// <returns>Dictionary<key日, value曜日></returns>
 		/// <remarks></remarks>
-        public static Dictionary<int, string> Day(int year, int month)
+        public static Dictionary<int, string> GetDayAndWeekName(DateTime date)
         {
             //日付、曜日を格納するための辞書
             Dictionary<int, string> day = new Dictionary<int, string>();
 
+            //DateTime型をint型に変換
+            string yearString = date.ToString("yyyy");
+            string monthString = date.ToString("MM");
+            int year = int.Parse(yearString);
+            int month = int.Parse(monthString);
+
             //月末が何日までか取得
-            var firstDay = new DateTime(year, month, 1);
-            var lastday = new DateTime(firstDay.Year, firstDay.Month, DateTime.DaysInMonth(firstDay.Year, firstDay.Month));
+            var lastday = DateTime.DaysInMonth(year, month);
 
             //日付、曜日を格納
-            for (int i = 1; i <= lastday.Day; i++)
+            for (int i = 1; i <= lastday; i++)
             {
                 //日付を定義
                 var theDay = new DateTime(year, month, i);
