@@ -25,23 +25,26 @@ namespace TestExcelOutput
 
         private void btnTestExcelOutput_Click(object sender, EventArgs e)
         {
+            //excel templateファイルの相対パス
             string templeteFileName = "..\\..\\excelTemplate\\検収記録_template.xlsx";
-            //string outputExcelFileName = "..\\..\\excelTemplate\\PDFTemp\\検収記録.xlsx";
-            //string outputExcelFileName = this.saveExcelFileDialog.FileName;
+            //出力Excelの絶対パス
             string outputExcelFileName = GetOutPutPath("検収記録.xlsx");
+            //出力PDFの絶対パス
             string pdfFileName = GetOutPutPath("検収記録.pdf");
 
+            //excel templateファイルを出力Excelパスにコピーする
             File.Copy(templeteFileName, outputExcelFileName, true);
             File.SetAttributes(outputExcelFileName, FileAttributes.Normal);
 
             //シート名
             string sheetName = "検収記録";
 
-            //目標行の画線をコピーする
+            //Excel共通部品のオブジェクトを生成する
             ExcelFileSingleton excelSingleton = ExcelFileSingleton.GetInstance();
 
             try
             {
+                //出力ExcelをOpenする
                 excelSingleton.OpenExcel(outputExcelFileName);
                 
                 //新規の列(3列)を指定列(D:D)に挿入する
@@ -61,6 +64,7 @@ namespace TestExcelOutput
             }
             finally
             {
+                //Excel共通部品のオブジェクトをclose
                 excelSingleton.CloseExcel();
             }
 
@@ -75,6 +79,12 @@ namespace TestExcelOutput
             MessageBox.Show("Output have been finished!!!");
         }
 
+        /// <summary>
+		/// ファイル名で絶対パスを取得する
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
+		/// <remarks></remarks>
         private string GetOutPutPath(string fileName)
         {
             string path = "";
@@ -107,8 +117,10 @@ namespace TestExcelOutput
             List<ExcelRowObject> rows = new List<ExcelRowObject>();
             ExcelRowObject headRow = new ExcelRowObject();
 
+            //明細クラスからtypeを取得する
             var eVtype = typeof(InspectionRecordEM);
-            foreach(PropertyInfo pf in eVtype.GetProperties())
+            //typeのPropertyInfoをループする
+            foreach (PropertyInfo pf in eVtype.GetProperties())
             {
                 string cellValue = (string)pf.GetValue(insRecordEV);
                 var attribute = (ExcelCellPositionAttribute)pf.GetCustomAttributes(typeof(ExcelCellPositionAttribute), false).FirstOrDefault();
@@ -155,21 +167,26 @@ namespace TestExcelOutput
             //セルの値を設定する
             List<ExcelRowObject> rows = new List<ExcelRowObject>();
             
-
+            //明細クラスからtypeを取得する
             var eVtype = typeof(InspectionRecordDetailEM);
 
             foreach(InspectionRecordDetailEM detail in details)
             {
                 ExcelRowObject row = new ExcelRowObject();
+
+                //typeのPropertyInfoをループする
                 foreach (PropertyInfo pf in eVtype.GetProperties())
-                {   
+                {
+                    //PropertyInfoのExcelColPositionAttribute情報を取得する
                     var attribute = (ExcelColPositionAttribute)pf.GetCustomAttributes(typeof(ExcelColPositionAttribute), false).FirstOrDefault();
                     if (attribute is null)
                     {
                         continue;
                     }
+                    //PropertyInfoとオブジェクトでPropertyの値を取得する
                     string cellValue = (string)pf.GetValue(detail);
 
+                    //位置情報と値をcellに設定する
                     ExcelCellObject cell = new ExcelCellObject();
                     cell.RowIndex = detail.RowIndex;
                     cell.ColIndex = attribute.Col;
@@ -180,11 +197,8 @@ namespace TestExcelOutput
                 rows.Add(row);
             }
 
+            //指定したシート名称で、シートに明細内容を出力する
             excelSingleton.WriteRowsToSheet(sheetName, rows);
-
         }
-
-
-        
     }
 }
