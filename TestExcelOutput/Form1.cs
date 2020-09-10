@@ -25,7 +25,7 @@ namespace TestExcelOutput
 
         private void btnTestExcelOutput_Click(object sender, EventArgs e)
         {
-            string templeteFileName = "..\\..\\excelTemplate\\検収記録_template_1.xlsx";
+            string templeteFileName = "..\\..\\excelTemplate\\検収記録_template.xlsx";
             //string outputExcelFileName = "..\\..\\excelTemplate\\PDFTemp\\検収記録.xlsx";
             //string outputExcelFileName = this.saveExcelFileDialog.FileName;
             string outputExcelFileName = GetOutPutPath("検収記録.xlsx");
@@ -35,7 +35,7 @@ namespace TestExcelOutput
             File.SetAttributes(outputExcelFileName, FileAttributes.Normal);
 
             //シート名
-            string sheetName = "検収記録_例.店舗全体";
+            string sheetName = "検収記録";
 
             //目標行の画線をコピーする
             ExcelFileSingleton excelSingleton = ExcelFileSingleton.GetInstance();
@@ -70,7 +70,7 @@ namespace TestExcelOutput
 
             //PDFに変換後、TempのExcelファイルを削除する
             //File.Delete(outputExcelFileName);
-            Dictionary<int, string> dictDay = ExcelComm.GetDayAndWeekName(DateTime.Now);
+            
 
             MessageBox.Show("Output have been finished!!!");
         }
@@ -96,6 +96,7 @@ namespace TestExcelOutput
         private void SetHeadCellData2Excel(ExcelFileSingleton excelSingleton, string sheetName)
         {
             //今後、DBからデータを取得して、ExcelViewのobjectに格納する
+            Dictionary<int, string> dictDay = ExcelComm.GetDayAndWeekName(DateTime.Now);
             InspectionRecordEM insRecordEV = new InspectionRecordEM();
             insRecordEV.Quantity = "数量";
             insRecordEV.Weight = "重量";

@@ -77,8 +77,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="excelTemplate\一般衛生管理_template.xlsx" />
-    <None Include="excelTemplate\検収記録_template_1.xlsx" />
+    <None Include="ExcelTemplate\一般衛生管理_template.xlsx" />
+    <None Include="ExcelTemplate\個人衛生管理_template.xlsx" />
+    <None Include="ExcelTemplate\検収記録_template.xlsx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,7 +94,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="excelTemplate\PDFTemp\" />
+    <Folder Include="ExcelTemplate\PDFTemp\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\PA.Office.dll" />
